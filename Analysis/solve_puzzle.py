@@ -174,6 +174,8 @@ def generate_and_check_keys(A, pairing_indices, line_handling):
     # Hint transformation
     for i in range(12):
         byte_values = byte_values_matrix[:, i]
+
+        # First hint interpretation
         x = byte_values
         transformed_bytes = -1 * x + 64 / (x + 1e-9)
         key_bytes = transformed_bytes
@@ -184,6 +186,10 @@ def generate_and_check_keys(A, pairing_indices, line_handling):
 
         key_bytes = np.floor(((transformed_bytes - np.min(transformed_bytes)) / (np.max(transformed_bytes) - np.min(transformed_bytes))) * 255)
         all_keys.append("".join([f"{(int(b) & 0xff):02x}" for b in key_bytes]))
+
+        # Second hint interpretation
+        transformed_bytes = (byte_values + 64) % 256
+        all_keys.append("".join([f"{int(b):02x}" for b in transformed_bytes]))
 
 
     with open(f"keys_{line_handling}.txt", "w") as f:
